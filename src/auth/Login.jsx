@@ -1,4 +1,5 @@
 import  { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Button, 
   TextField, 
@@ -6,7 +7,6 @@ import {
   Typography, 
   Container, 
   Box, 
-  Link
 } from '@mui/material';
 
 export default function Login() {
@@ -78,7 +78,7 @@ export default function Login() {
             Iniciar Sesión
           </Button>
         </Box>
-        <Link href='/register' underline='none'>¿No tienes cuenta? crea una.</Link>
+        <Link to='/auth/register' underline='none'>¿No tienes cuenta? Crea Una.</Link>
       </Paper>
     </Container>
   );

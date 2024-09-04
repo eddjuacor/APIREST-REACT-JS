@@ -1,4 +1,6 @@
 import  { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import { 
   Button, 
   TextField, 
@@ -6,8 +8,7 @@ import {
   Typography, 
   Container, 
   Box, 
-  Link,
-  MenuItem,
+  MenuItem
 } from '@mui/material';
 
 export default function Login() {
@@ -62,7 +63,7 @@ export default function Login() {
   
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ pt: 2}} >
+    <Container component="main" maxWidth="xs" sx={{ pt: 10}} >
       <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
          Registrate
@@ -167,7 +168,7 @@ export default function Login() {
             Registrarse
           </Button>
         </Box>
-        <Link href="/login" underline='none'>¿Ya tienes cuenta? Inicia sesion</Link>
+        <Link to="/auth/login" underline='none'>¿Ya tienes cuenta? Inicia Sesion</Link>
       </Paper>
      
     </Container>
