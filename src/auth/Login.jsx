@@ -1,5 +1,7 @@
-import  { useState } from 'react';
+import  {  useState } from 'react';
 import { Link } from 'react-router-dom';
+import AppiAxios from '../config/axios'
+import { useNavigate } from 'react-router-dom';
 import { 
   Button, 
   TextField, 
@@ -10,50 +12,59 @@ import {
 } from '@mui/material';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+ const [credenciales, guardarCredenciales] = useState({});
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setEmailError(false);
-    setPasswordError(false);
+ const navigate = useNavigate();
 
-    if (email === '') {
-      setEmailError(true);
-    }
-    if (password === '') {
-      setPasswordError(true);
-    }
 
-    if (email && password) {
-      console.log('Email:', email);
-      console.log('Password:', password);
-      // Aquí iría la lógica para enviar los datos al servidor
-    }
-  };
+//iniciar sesion en el servidor
+const iniciarSesion = async e => {
+  e.preventDefault();
 
-  return (
+  try {
+    const respuesta = await AppiAxios.post('/login', credenciales)
+    
+    //almacenar el token en localstorage
+    const {accessToken} = respuesta.data;
+    localStorage.setItem('accessToken', accessToken);
+    
+
+    //si las credenciales son correctas ir a la pagina de inicio
+    navigate('/')
+    console.log(respuesta)
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+ const leerDatos = (e) => {
+  guardarCredenciales({
+    ...credenciales,
+    [e.target.name] : e.target.value
+  })
+ }
+
+
+
+  return ( 
     <Container component="main" maxWidth="xs" sx={{ pt: 18}} >
       <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
           Iniciar Sesión
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={iniciarSesion} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
             label="Correo Electrónico"
-            name="email"
+            name="correo_electronico"
             autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailError}
-            helperText={emailError ? "El correo electrónico es requerido" : ""}
+            onChange={leerDatos}
+            
           />
           <TextField
             margin="normal"
@@ -64,11 +75,8 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={passwordError}
-            helperText={passwordError ? "La contraseña es requerida" : ""}
-          />
+            onChange={leerDatos}
+                      />
           <Button
             type="submit"
             fullWidth

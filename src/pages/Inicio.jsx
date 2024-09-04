@@ -13,7 +13,14 @@ function Inicio () {
   //aqui realizo la consulta a la api
   const consultarApi = async () => {
     
-    const productosConsulta = await AppiAxios.get('/productos')
+
+    
+
+    const productosConsulta = await AppiAxios.get('/productos', {
+      headers:{
+        authorization:``
+      }
+    })
     
     //guardo en el estado lo que me traer la consulta a la api
     guardarProductos(productosConsulta.data)

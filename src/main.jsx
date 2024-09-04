@@ -13,9 +13,13 @@ import { RouterProvider } from 'react-router-dom';
 import './index.css'
 import { CssBaseline } from '@mui/material';
 
+import ApiProvider from './context/ContextApi';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
   <CssBaseline/>
-    <RouterProvider router={router}/>
+    <ApiProvider>
+        <RouterProvider router={router}/>
+    </ApiProvider>  
   </StrictMode>,
 )
