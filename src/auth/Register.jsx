@@ -1,5 +1,7 @@
 import  { useState } from 'react';
 import { Link } from 'react-router-dom';
+import AppiAxios from '../config/axios'
+
 
 import { 
   Button, 
@@ -12,54 +14,30 @@ import {
 } from '@mui/material';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+ 
+  const [credenciales, guardarCredenciales] = useState({});
 
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-
-  const [currency, setCurrency] = useState('Cliente');
-
-  const handleSubmit = (e) => {
+  const registrarse = async (e) => {
     e.preventDefault();
-    setEmailError(false);
-    setPasswordError(false);
 
-    if (email === '') {
-      setEmailError(true);
-    }
-    if (password === '') {
-      setPasswordError(true);
+    try {
+      const respuesta = await AppiAxios.post('/usuarios', credenciales)
+      console.log(respuesta)
+    } catch (error) {
+      console.log(error)
     }
 
-    if (email && password) {
-      console.log('Email:', email);
-      console.log('Password:', password);
-      // Aquí iría la lógica para enviar los datos al servidor
-    }
+
   };
-
-
-
-
-  const currencies = [
-    {
-      value: 'Admin',
-      label: 'Admin',
-    },
-    {
-      value: 'Usuario',
-      label: 'Usuario',
-    },
-    {
-      value: 'Cliente',
-      label: 'Cliente',
-    },
-  ];
   
-  const handleChange = (event) => {
-    setCurrency(event.target.value);
-  };
+
+  const leerDatosRegistro = (e) => {
+    guardarCredenciales({
+      ...credenciales,
+      [e.target.name] : e.target.value
+    })
+   }
+
   
 
   return (
@@ -68,7 +46,7 @@ export default function Login() {
         <Typography component="h1" variant="h5">
          Registrate
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={registrarse} sx={{ mt: 1 }}>
           <TextField
            /*-----------email------------*/
             margin="normal"
@@ -76,13 +54,11 @@ export default function Login() {
             fullWidth
             id="email"
             label="Correo Electrónico"
-            name="email"
+            name="correo_electronico"
             autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailError}
-            helperText={emailError ? "El correo electrónico es requerido" : ""}
+            onChange={leerDatosRegistro}
+
           />
             
           <TextField
@@ -90,15 +66,13 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
-            id="text"
+            id="nombre"
             label="Nombre"
-            name="txtNombre"
+            name="nombre_completo"
             autoComplete="txtNombre"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailError}
-            helperText={emailError ? "El correo electrónico es requerido" : ""}
+            onChange={leerDatosRegistro}
+            
           />  
 
          <TextField
@@ -106,15 +80,13 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
-            id="text"
+            id="telefono"
             label="Telefono"
-            name="txtTelefono"
+            name="telefono"
             autoComplete="txtTelefono"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailError}
-            helperText={emailError ? "El correo electrónico es requerido" : ""}
+            onChange={leerDatosRegistro}
+        
           />  
 
          <Box sx={{ display: 'flex', justifyContent: "space-between" ,  mt:1}}>
@@ -124,21 +96,32 @@ export default function Login() {
             id="date"
             autoComplete='txtFecha Nacimiento'
             type="date"
+            name="fecha_nacimiento"
+            onChange={leerDatosRegistro}
          /> 
 
+
          <TextField
-          id="standard-select-currency"
-          select
-          label="Rol"
-          value={currency}
-          onChange={handleChange}
-         >
-           {currencies.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-          ))}
-        </TextField>
+         /*-----------Estado------------*/
+          
+            id="estado"
+            label = "Estado"
+            autoComplete='estado'
+            type="numer"
+            name= "idEstado"
+            onChange={leerDatosRegistro}
+         /> 
+
+        <TextField
+         /*-----------Rol------------*/
+          
+            id="rol"
+            label = "Rol"
+            autoComplete='rol'
+            type="numer"
+            name= "idRol"
+            onChange={leerDatosRegistro}
+         /> 
 
         </Box>
         
@@ -153,10 +136,8 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={passwordError}
-            helperText={passwordError ? "La contraseña es requerida" : ""}
+            onChange={leerDatosRegistro}
+           
           />
  
           <Button
@@ -168,7 +149,7 @@ export default function Login() {
             Registrarse
           </Button>
         </Box>
-        <Link to="/auth/login" underline='none'>¿Ya tienes cuenta? Inicia Sesion</Link>
+        <Link to="/" underline='none'>¿Ya tienes cuenta? Inicia Sesion</Link>
       </Paper>
      
     </Container>

@@ -1,6 +1,7 @@
-import  {  useState } from 'react';
+import  {  useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppiAxios from '../config/axios'
+import {ContextApi} from '../context/ContextApi'
 import { useNavigate } from 'react-router-dom';
 import { 
   Button, 
@@ -12,9 +13,14 @@ import {
 } from '@mui/material';
 
 export default function Login() {
- const [credenciales, guardarCredenciales] = useState({});
 
- const navigate = useNavigate();
+const navigate = useNavigate();
+
+  //Aut y token desde el context
+ const [auth, guardarAuth] =  useContext(ContextApi)  
+
+ //credenciales que recogemos al momento que el cliente inicie sesion
+ const [credenciales, guardarCredenciales] = useState({});
 
 
 //iniciar sesion en el servidor
@@ -23,14 +29,18 @@ const iniciarSesion = async e => {
 
   try {
     const respuesta = await AppiAxios.post('/login', credenciales)
-    
+
     //almacenar el token en localstorage
     const {accessToken} = respuesta.data;
-    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('authToken', accessToken);
     
+    guardarAuth({
+      accessToken,
+      auth: true  
+    })
 
     //si las credenciales son correctas ir a la pagina de inicio
-    navigate('/')
+    navigate('/inicio')
     console.log(respuesta)
 
   } catch (error) {
@@ -86,7 +96,7 @@ const iniciarSesion = async e => {
             Iniciar Sesión
           </Button>
         </Box>
-        <Link to='/auth/register' underline='none'>¿No tienes cuenta? Crea Una.</Link>
+        <Link to='/register' underline='none'>¿No tienes cuenta? Crea Una.</Link>
       </Paper>
     </Container>
   );
