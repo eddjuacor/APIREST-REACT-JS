@@ -55,8 +55,6 @@ const iniciarSesion = async e => {
   })
  }
 
-
-
   return ( 
     <Container component="main" maxWidth="xs" sx={{ pt: 18}} >
       <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -64,6 +62,7 @@ const iniciarSesion = async e => {
           Iniciar Sesión
         </Typography>
         <Box component="form" onSubmit={iniciarSesion} sx={{ mt: 1 }}>
+          
           <TextField
             margin="normal"
             required
@@ -76,6 +75,7 @@ const iniciarSesion = async e => {
             onChange={leerDatos}
             
           />
+
           <TextField
             margin="normal"
             required
@@ -86,7 +86,9 @@ const iniciarSesion = async e => {
             id="password"
             autoComplete="current-password"
             onChange={leerDatos}
-                      />
+
+          />
+          
           <Button
             type="submit"
             fullWidth

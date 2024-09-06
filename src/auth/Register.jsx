@@ -1,145 +1,174 @@
-import  { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AppiAxios from '../config/axios'
 
-
-import { 
-  Button, 
-  TextField, 
-  Paper, 
-  Typography, 
-  Container, 
-  Box, 
+import {
+  Button,
+  TextField,
+  Paper,
+  Typography,
+  Container,
+  Box,
   MenuItem
+
 } from '@mui/material';
 
-export default function Login() {
- 
-  const [credenciales, guardarCredenciales] = useState({});
+const roles = [
+  { idRol: '1', label: 'Admin' },
+  { idRol: '2', label: 'Usuario' },
+  // Aqui puedo agregar mas roles
+];
 
-  const registrarse = async (e) => {
+const estados = [
+  { idEstados: '1', label: 'Activo' },
+  { idEstados: '2', label: 'Inactivo' },
+  // aqui puedo agregar mas estados
+];
+
+
+export default function Register() {
+
+  const navigate = useNavigate();
+
+  //al momento que el cliente cree un usuario vamos a recoger estos datos y vamos a haacer la validacion
+
+  const [formData, setFormData] = useState({
+    idRol: '',
+    idEstados: '',
+    correo_electronico: '',
+    nombre_completo: '',
+    telefono: '',
+    fecha_nacimiento: '',
+    password: ''
+  });
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const crearRegistro = async (e) => {
     e.preventDefault();
-
     try {
-      const respuesta = await AppiAxios.post('/usuarios', credenciales)
+      const respuesta = await AppiAxios.post('/usuarios', formData)
       console.log(respuesta)
+      //si las credenciales son correctas ir a la pagina de inicio, nos vamos al login
+      navigate('/')
     } catch (error) {
       console.log(error)
     }
-
-
   };
-  
 
-  const leerDatosRegistro = (e) => {
-    guardarCredenciales({
-      ...credenciales,
-      [e.target.name] : e.target.value
-    })
-   }
-
-  
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ pt: 10}} >
+    <Container component="main" maxWidth="xs" sx={{ pt: 8 }} >
       <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
-         Registrate
+          Registrate
         </Typography>
-        <Box component="form" onSubmit={registrarse} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={crearRegistro} sx={{ mt: 1 }}>
           <TextField
-           /*-----------email------------*/
+            /*-----------email------------*/
+            label="Email"
             margin="normal"
             required
-            fullWidth
-            id="email"
-            label="Correo Electrónico"
             name="correo_electronico"
-            autoComplete="email"
-            autoFocus
-            onChange={leerDatosRegistro}
-
-          />
-            
-          <TextField
-          /*-----------nombre------------*/
-            margin="normal"
-            required
+            type="email"
+            value={formData.correo_electronico}
+            onChange={handleChange}
             fullWidth
-            id="nombre"
+          />
+
+          <TextField
+            /*-----------nombre------------*/
             label="Nombre"
-            name="nombre_completo"
-            autoComplete="txtNombre"
-            autoFocus
-            onChange={leerDatosRegistro}
-            
-          />  
-
-         <TextField
-          /*-----------numero------------*/
             margin="normal"
             required
+            name="nombre_completo"
+            value={formData.nombre_completo}
+            onChange={handleChange}
             fullWidth
-            id="telefono"
-            label="Telefono"
-            name="telefono"
-            autoComplete="txtTelefono"
-            autoFocus
-            onChange={leerDatosRegistro}
-        
-          />  
-
-         <Box sx={{ display: 'flex', justifyContent: "space-between" ,  mt:1}}>
-         <TextField
-         /*-----------fecha de nacimiento------------*/
-          
-            id="date"
-            autoComplete='txtFecha Nacimiento'
-            type="date"
-            name="fecha_nacimiento"
-            onChange={leerDatosRegistro}
-         /> 
-
-
-         <TextField
-         /*-----------Estado------------*/
-          
-            id="estado"
-            label = "Estado"
-            autoComplete='estado'
-            type="numer"
-            name= "idEstado"
-            onChange={leerDatosRegistro}
-         /> 
-
-        <TextField
-         /*-----------Rol------------*/
-          
-            id="rol"
-            label = "Rol"
-            autoComplete='rol'
-            type="numer"
-            name= "idRol"
-            onChange={leerDatosRegistro}
-         /> 
-
-        </Box>
-        
+          />
 
           <TextField
-          /*-----------password------------*/
+            /*-----------numero------------*/
+            label="Teléfono"
             margin="normal"
             required
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleChange}
             fullWidth
-            name="password"
-            label="Contraseña"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={leerDatosRegistro}
-           
           />
- 
+
+          <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 1 }}>
+            <TextField
+              /*-----------fecha de nacimiento------------*/
+              label="Nacimiento"
+              margin="normal"
+              required
+              name="fecha_nacimiento"
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={formData.fecha_nacimiento}
+              onChange={handleChange}
+              fullWidth
+            />
+
+            <TextField
+              select
+              label="Rol"
+              margin="normal"
+              required
+              name="idRol"
+              value={formData.idRol}
+              onChange={handleChange}
+              fullWidth
+            >
+              {roles.map((role) => (
+                <MenuItem key={role.idRol} value={role.idRol}>
+                  {role.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              select
+              label="Estado"
+              margin="normal"
+              required
+              name="idEstados"
+              value={formData.idEstados}
+              onChange={handleChange}
+              fullWidth
+            >
+              {estados.map((estado) => (
+                <MenuItem key={estado.idEstados} value={estado.idEstados}>
+                  {estado.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+          </Box>
+
+          <TextField
+            /*-----------password------------*/
+            label="Contraseña"
+            margin="normal"
+            required
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            fullWidth
+
+          />
           <Button
             type="submit"
             fullWidth
@@ -151,7 +180,7 @@ export default function Login() {
         </Box>
         <Link to="/" underline='none'>¿Ya tienes cuenta? Inicia Sesion</Link>
       </Paper>
-     
+
     </Container>
   );
 }

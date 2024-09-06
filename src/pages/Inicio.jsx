@@ -38,7 +38,7 @@ function Inicio() {
 
        } catch (error) {
         //error con la autorizacion
-        if(error.response.status = 500){
+        if(error.response.status == 500){
           navigate('/')  
         }
        }
@@ -48,7 +48,7 @@ function Inicio() {
       navigate('/inicio')
     }
 
-  }, [productos])
+  }, [])
 
   return (
 
