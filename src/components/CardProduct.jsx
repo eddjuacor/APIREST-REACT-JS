@@ -1,22 +1,23 @@
-import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import foto from '../assets/img/s21.jpg'
 
 export default function CardProduct({producto}) {
 
   //desestructuracion de productos, extrare valores
-  const{nombre, marca, codigo, stock, precio} = producto
-
+  const{ nombre, marca, codigo, stock, precio} = producto
+  
   return (
     <Card sx={{ width: 345, margin: 1, border: 1}}>
       <CardMedia
-        sx={{ height: 140 }}
-        image="/static/images/cards/contemplative-reptile.jpg"
-        title="green iguana"
+        component="img"
+        image={foto}
+        title={nombre}
+        sx={{ objectFit: 'cover' }}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">

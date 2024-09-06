@@ -1,94 +1,96 @@
-import  {  useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
-import AppiAxios from '../config/axios'
-import {ContextApi} from '../context/ContextApi'
-import { useNavigate } from 'react-router-dom';
-import { 
-  Button, 
-  TextField, 
-  Paper, 
-  Typography, 
-  Container, 
-  Box, 
-} from '@mui/material';
+import { useContext } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { formValidation } from './formValidation';
+import { Link, useNavigate } from 'react-router-dom';
+import AppiAxios from '../config/axios';
+import { ContextApi } from '../context/ContextApi';
+import { Button, TextField, Paper, Typography, Container, Box } from '@mui/material';
 
 export default function Login() {
+  // Configura react-hook-form con yup
+  const { handleSubmit, control, formState: { errors } } = useForm({
+    resolver: yupResolver(formValidation),
+  });
 
-const navigate = useNavigate();
+  // Configuración para redirección
+  const navigate = useNavigate();
 
-  //Aut y token desde el context
- const [auth, guardarAuth] =  useContext(ContextApi)  
+  // Aut y token desde el context
+  const [auth, guardarAuth] = useContext(ContextApi);
 
- //credenciales que recogemos al momento que el cliente inicie sesion
- const [credenciales, guardarCredenciales] = useState({});
+  // Función para iniciar sesión en el servidor
+  const iniciarSesion = async (data) => {
+    try {
+      const respuesta = await AppiAxios.post('/login', data);
 
+      // Almacenar el token en localStorage
+      const { accessToken } = respuesta.data;
+      localStorage.setItem('authToken', accessToken);
 
-//iniciar sesion en el servidor
-const iniciarSesion = async e => {
-  e.preventDefault();
+      guardarAuth({
+        accessToken,
+        auth: true,
+      });
 
-  try {
-    const respuesta = await AppiAxios.post('/login', credenciales)
+      // Redirigir a la página de inicio
+      navigate('/inicio');
+      console.log(respuesta);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    //almacenar el token en localstorage
-    const {accessToken} = respuesta.data;
-    localStorage.setItem('authToken', accessToken);
-    
-    guardarAuth({
-      accessToken,
-      auth: true  
-    })
-
-    //si las credenciales son correctas ir a la pagina de inicio
-    navigate('/inicio')
-    console.log(respuesta)
-
-  } catch (error) {
-    console.log(error)
-  }
-}
-
- const leerDatos = (e) => {
-  guardarCredenciales({
-    ...credenciales,
-    [e.target.name] : e.target.value
-  })
- }
-
-  return ( 
-    <Container component="main" maxWidth="xs" sx={{ pt: 18}} >
-      <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  return (
+    <Container component="main" maxWidth="xs" sx={{ pt: 18 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Typography component="h1" variant="h5">
           Iniciar Sesión
         </Typography>
-        <Box component="form" onSubmit={iniciarSesion} sx={{ mt: 1 }}>
-          
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Correo Electrónico"
+        <Box component="form" onSubmit={handleSubmit(iniciarSesion)} sx={{ mt: 1 }}>
+          <Controller
             name="correo_electronico"
-            autoComplete="email"
-            autoFocus
-            onChange={leerDatos}
-            
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Correo Electrónico"
+                variant="outlined"
+                fullWidth
+                error={Boolean(errors.correo_electronico)}
+                helperText={errors.correo_electronico?.message}
+                margin="normal"
+              />
+            )}
           />
 
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Contraseña"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={leerDatos}
-
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Contraseña"
+                type="password"
+                variant="outlined"
+                fullWidth
+                error={Boolean(errors.password)}
+                helperText={errors.password?.message}
+                margin="normal"
+              />
+            )}
           />
-          
+
           <Button
             type="submit"
             fullWidth
@@ -98,7 +100,9 @@ const iniciarSesion = async e => {
             Iniciar Sesión
           </Button>
         </Box>
-        <Link to='/register' underline='none'>¿No tienes cuenta? Crea Una.</Link>
+        <Link to="/register" underline="none">
+          ¿No tienes cuenta? Crea Una.
+        </Link>
       </Paper>
     </Container>
   );
