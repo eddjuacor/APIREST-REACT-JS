@@ -4,31 +4,25 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 
-import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { ContextApi } from '../context/ContextApi'
+
+import { Link, useNavigate } from 'react-router-dom';
+import { ContextApi } from '../context/ContextApi';
+import {useContext} from 'react'
+
 
 export default function Navbar() {
 
   const navigate = useNavigate();
 
-  const [auth, guardarAuth] = useContext(ContextApi);
+  const { cerrarSesion } = useContext(ContextApi);
 
-  // si el auth es false el token se va a eliminar
-  const cerrarSesion = () => {
-    guardarAuth({
-      accessToken: '',
-      auth: false
-    })
-
-    localStorage.setItem('accessToken', '');
-
-    //redireccionar
+  const handleLogout = () => {
+    cerrarSesion();
     navigate('/')
-  }
+};
 
-  console.log(auth)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -37,7 +31,8 @@ export default function Navbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
              CODECAMP
           </Typography>
-          <Button color="inherit" onClick={cerrarSesion}>Cerrar Sesion</Button>
+          <Link to="/inicio/carrito" style={{ textDecoration: 'none' }}><LocalGroceryStoreIcon/> </Link>
+          <Button color="inherit" onClick={handleLogout}>Cerrar Sesion</Button>
         </Toolbar>
       </AppBar>
     </Box>

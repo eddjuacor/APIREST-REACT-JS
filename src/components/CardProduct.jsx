@@ -5,11 +5,25 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import foto from '../assets/img/s21.jpg'
+import { useContext } from 'react';
+import { ContextApi } from '../context/ContextApi';
 
 export default function CardProduct({producto}) {
 
   //desestructuracion de productos, extrare valores
   const{ nombre, marca, codigo, stock, precio} = producto
+
+  const {addToCart, cartItems, setCartItems} = useContext(ContextApi);
+
+  const addItemsCart = (producto)=>{
+    addToCart({ nombre, marca, codigo, stock, precio });
+    setCartItems([
+      ...cartItems,
+      producto
+    ])
+
+    console.log(producto);
+  }
   
   return (
     <Card sx={{ width: 345, margin: 1, border: 1}}>
@@ -31,9 +45,9 @@ export default function CardProduct({producto}) {
           Precio: {precio}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+      <CardActions sx={{display: 'Flex', justifyContent: 'Center'}}>
+        <Button size="small">Detalles</Button>
+        <Button size="small" onClick={()=>addItemsCart(producto)}>Agregar a Carrito</Button>
       </CardActions>
     </Card>
   );

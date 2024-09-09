@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
+import {  useEffect, useState } from 'react'
 import AppiAxios from '../config/axios.js'
 import Card from '../components/CardProduct.jsx';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ContextApi } from '../context/ContextApi'
+
 
 
 function Inicio() {
@@ -13,8 +13,7 @@ function Inicio() {
   //trabajar con el state, guardarProductos solo va a guardar el state
   const [productos, guardarProductos] = useState([]);
 
-  //utilizar los valores que pusimos en el context
-  const [auth, guardarAuth] = useContext(ContextApi);
+
 
   //aqui realizo la consulta a la api
   useEffect(() => {

@@ -17,7 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Aut y token desde el context
-  const [auth, guardarAuth] = useContext(ContextApi);
+  const {auth, guardarAuth} = useContext(ContextApi);
 
   // Función para iniciar sesión en el servidor
   const iniciarSesion = async (data) => {
