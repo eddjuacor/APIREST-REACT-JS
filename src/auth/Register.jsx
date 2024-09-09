@@ -14,8 +14,8 @@ import {
 } from '@mui/material';
 
 const roles = [
-  { idRol: '1', label: 'Admin' },
-  { idRol: '2', label: 'Usuario' },
+  { idRol: '1', label: 'Cliente' },
+  { idRol: '2', label: 'Operador' },
   // Aqui puedo agregar mas roles
 ];
 
@@ -62,7 +62,6 @@ export default function Register() {
       console.log(error)
     }
   };
-
 
   return (
     <Container component="main" maxWidth="xs" sx={{ pt: 8 }} >

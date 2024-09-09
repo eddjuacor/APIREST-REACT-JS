@@ -6,6 +6,7 @@ import  Login  from "../auth/Login";
 import Register from  "../auth/Register";
 import CartElements from '../components/carrito/CartElements';
 import { createBrowserRouter } from "react-router-dom";
+import DetallesOrden from '../components/carrito/DetallesOrden';
 
 
 export const router = createBrowserRouter([
@@ -35,7 +36,12 @@ export const router = createBrowserRouter([
             {
                 path: 'carrito', 
                 element: <CartElements />
-            }   
+            },
+            {
+                path: 'detalleOrden',
+                element: <DetallesOrden/>
+            }
+
         ]
     }
    
