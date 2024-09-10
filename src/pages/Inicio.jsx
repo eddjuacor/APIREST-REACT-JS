@@ -1,53 +1,14 @@
-import {  useEffect, useState } from 'react'
-import AppiAxios from '../config/axios.js'
 import Card from '../components/CardProduct.jsx';
 import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { ContextApi } from '../context/ContextApi';
+
 
 
 
 function Inicio() {
-
-  const navigate = useNavigate();
-
-  //trabajar con el state, guardarProductos solo va a guardar el state
-  const [productos, guardarProductos] = useState([]);
-
-
-
-  //aqui realizo la consulta a la api
-  useEffect(() => {
-
-    //leer token desde el local storage
-    const token = localStorage.getItem('authToken') || auth.accessToken;
-
-    //confirmar si hay token
-    if (token) {
-      const consultarApi = async () => {
-
-       try {
-        const productosConsulta = await AppiAxios.get('/productos', {
-          headers: {
-            authorization: token
-          }
-        });
-
-        //guardo en el estado lo que me traer la consulta a la api
-        guardarProductos(productosConsulta.data)
-
-       } catch (error) {
-        //error con la autorizacion
-        if(error.response.status == 500){
-          navigate('/')  
-        }
-       }
-      }
-      consultarApi();
-    }else{
-      navigate('/inicio')
-    }
-
-  }, [])
+  
+  const { productos } = useContext(ContextApi);
 
   return (
 

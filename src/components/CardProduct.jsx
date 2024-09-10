@@ -21,8 +21,6 @@ export default function CardProduct({producto}) {
       ...cartItems,
       producto
     ])
-
-    console.log(producto);
   }
   
   return (

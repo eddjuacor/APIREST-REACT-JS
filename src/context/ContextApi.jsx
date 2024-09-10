@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
+
 import { createContext, useState, useEffect } from "react";
-import AppiAxios from "../config/axios.js"; // Asegúrate de tener este archivo correctamente configurado
+import AppiAxios from "../config/axios.js"; 
 
 // Crear el contexto
 export const ContextApi = createContext();
@@ -17,30 +17,76 @@ const ApiProvider = ({ children }) => {
 
   const [userRole, setUserRole] = useState('operador');
 
+/**-----------------------------------Usuario----------------------------------------- */
+
+  const [usuario, setUsuario] = useState([]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await AppiAxios.get('/usuarios', {
+          headers: { authorization: auth.token }
+        });
+
+        setUsuario(response.data); 
+      } catch (error) {
+        console.error("Error al consultar los datos del usuario:", error.response ? error.response.data : error.message);
+      }
+    };
+
+    if (auth.token) {
+      fetchUserData();
+    }
+  }, [auth.token]);
+
+
+  /*----------------------------------OrdenDetalles------------------------------------ */
+
+  const [orden, setOrden] = useState([]);
+  const fetchOrdenDetalles = async () => {
+
+    try {
+
+      const OrdenDetalles = await AppiAxios.get("/ordenDetalles", {
+        headers: {authorization: token}
+      })
+      setOrden(OrdenDetalles.data)
+    } catch (error) {
+      console.error("Error al consultar ordenDetalles")
+    }
+  };
+
+  useEffect(()=>{
+    if(auth.token){
+      fetchOrdenDetalles();
+    }
+   
+  },[auth.token])
 
   /*-------------------------------------Productos-------------------------------------- */
 
   // Función para hacer una consulta de productos
-  const fetchProducts = async () => {
-    const token = localStorage.getItem("authToken") || auth.token;
-    if (token) {
-      try {
-        const response = await AppiAxios.get("/productos", {
-          headers: { authorization: token },
-        });
-        // Puedes manejar los productos aquí si es necesario
-      } catch (error) {
-        console.error("Error al consultar productos:", error);
-        if (error.response?.status === 500) {
-          // Manejar el error de acuerdo a tu lógica
-        }
-      }
-    }
-  };
+  const [productos, setProductos] = useState([]);
 
   useEffect(() => {
-    fetchProducts();
-  }, [auth.token]);
+    const fetchProductos = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const productosConsulta = await AppiAxios.get('/productos', {
+            headers: {
+              authorization: token
+            }
+          });
+          setProductos(productosConsulta.data);
+        }
+      } catch (error) {
+        console.error('Error fetching productos:', error);
+      }
+    };
+
+    fetchProductos();
+  }, []);
 
   /*------------------------------Carrito-----------------------------------------------*/
   // Estado del carrito
@@ -117,7 +163,13 @@ const ApiProvider = ({ children }) => {
         removeFromCart,
         clearCart,
         userRole,
-        setUserRole
+        setUserRole,
+        orden,
+        setOrden,
+        productos,
+        setProductos,
+        usuario,
+        setUsuario
       }}
     >
       {children}
