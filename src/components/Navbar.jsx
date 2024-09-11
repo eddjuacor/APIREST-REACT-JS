@@ -29,9 +29,16 @@ export default function Navbar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-             CODECAMP
+            
+             <Button color="inherit">
+              <Link to='/inicio' style={{ textDecoration: 'none', color: 'inherit' }}>CODECAMP</Link>
+              </Button>
+           
           </Typography>
-          <Link to="/inicio/carrito" style={{ textDecoration: 'none' }}><LocalGroceryStoreIcon/> </Link>
+          <Button>
+          <Link to="/inicio/carrito" style={{ color: 'white' }}><LocalGroceryStoreIcon/> </Link>
+          </Button>
+          
           {userRol === 'Operador' && (
             <Link to="/ordenes" style={{ textDecoration: 'none', color: 'inherit' }}>
               <Button color="inherit">

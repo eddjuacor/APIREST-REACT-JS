@@ -10,7 +10,7 @@ const CartElements = () => {
   const { cartItems, clearCart } = useContext(ContextApi);
 
   const handleClearCart = () => {
-    clearCart(); // Asumiendo que tienes una función para vaciar el carrito en tu contexto
+    clearCart(); 
   };
 
   return cartItems.length > 0 ? (

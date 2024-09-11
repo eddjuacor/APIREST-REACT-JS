@@ -7,11 +7,15 @@ export const ContextApi = createContext();
 
 // Proveedor del contexto
 const ApiProvider = ({ children }) => {
+
   // Estado de autenticación
   const [auth, guardarAuth] = useState({
     token: localStorage.getItem("authToken") || "",
     auth: !!localStorage.getItem("authToken"),
   });
+
+  //local storage CArrito
+
 
   /*--------------------------------------Roles---------------------------------------- */
 
@@ -27,7 +31,7 @@ const ApiProvider = ({ children }) => {
         const response = await AppiAxios.get('/usuarios', {
           headers: { authorization: auth.token }
         });
-
+        
         setUsuario(response.data); 
       } catch (error) {
         console.error("Error al consultar los datos del usuario:", error.response ? error.response.data : error.message);
@@ -51,6 +55,7 @@ const ApiProvider = ({ children }) => {
         headers: {authorization: token}
       })
       setOrden(OrdenDetalles.data)
+      console.log(OrdenDetalles.data)
     } catch (error) {
       console.error("Error al consultar ordenDetalles")
     }
@@ -96,24 +101,25 @@ const ApiProvider = ({ children }) => {
     return storedCartItems ? JSON.parse(storedCartItems) : [];
   });
 
-  // Función para añadir productos al carrito
-  const addToCart = (producto) => {
-    setCartItems((prevItems) => {
-      const existingProduct = prevItems.find((item) => item.id === producto.id);
-      let newItems;
-      if (existingProduct) {
-        newItems = prevItems.map((item) =>
-          item.id === producto.id
-            ? { ...item, quantity: item.quantity + 1 }
+  useEffect(() => {
+    // Guarda los artículos del carrito en localStorage cada vez que cambian
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+
+  const addToCart = (product) => {
+    // Añade producto al carrito y actualiza el estado
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.idProductos === product.idProductos);
+      if (existingItem) {
+        return prevItems.map(item =>
+          item.idProductos === product.idProductos
+            ? { ...item, cantidad: item.cantidad + 1 }
             : item
         );
       } else {
-        newItems = [...prevItems, { ...producto, quantity: 1 }];
+        return [...prevItems, { ...product, cantidad: 1 }];
       }
-
-      // Guardar el carrito en localStorage
-      localStorage.setItem("cartItems", JSON.stringify(newItems));
-      return newItems;
     });
   };
 
