@@ -24,12 +24,13 @@ const ApiProvider = ({ children }) => {
 /**-----------------------------------Usuario----------------------------------------- */
 
   const [usuario, setUsuario] = useState([]);
+ 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await AppiAxios.get('/usuarios', {
-          headers: { authorization: auth.token }
+          headers: { authorization: `Bearer ${auth.token}` }
         });
         
         setUsuario(response.data); 
@@ -47,27 +48,9 @@ const ApiProvider = ({ children }) => {
   /*----------------------------------OrdenDetalles------------------------------------ */
 
   const [orden, setOrden] = useState([]);
-  const fetchOrdenDetalles = async () => {
+  
 
-    try {
-
-      const OrdenDetalles = await AppiAxios.get("/ordenDetalles", {
-        headers: {authorization: token}
-      })
-      setOrden(OrdenDetalles.data)
-      console.log(OrdenDetalles.data)
-    } catch (error) {
-      console.error("Error al consultar ordenDetalles")
-    }
-  };
-
-  useEffect(()=>{
-    if(auth.token){
-      fetchOrdenDetalles();
-    }
-   
-  },[auth.token])
-
+  
   /*-------------------------------------Productos-------------------------------------- */
 
   // Función para hacer una consulta de productos
@@ -80,7 +63,7 @@ const ApiProvider = ({ children }) => {
         if (token) {
           const productosConsulta = await AppiAxios.get('/productos', {
             headers: {
-              authorization: token
+              authorization: `Bearer ${token}`
             }
           });
           setProductos(productosConsulta.data);

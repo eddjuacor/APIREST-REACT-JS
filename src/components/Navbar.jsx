@@ -38,14 +38,12 @@ export default function Navbar() {
           <Button>
           <Link to="/inicio/carrito" style={{ color: 'white' }}><LocalGroceryStoreIcon/> </Link>
           </Button>
-          
-          {userRol === 'Operador' && (
-            <Link to="/ordenes" style={{ textDecoration: 'none', color: 'inherit' }}>
+         
+            <Link to="/inicio/listaOrdenes" style={{ textDecoration: 'none', color: 'inherit' }}>
               <Button color="inherit">
                 Órdenes
               </Button>
             </Link>
-          )}
           <Button color="inherit" onClick={handleLogout}>Cerrar Sesion</Button>
         </Toolbar>
       </AppBar>

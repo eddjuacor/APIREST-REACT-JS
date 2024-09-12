@@ -21,9 +21,12 @@ export default function Login() {
 
   // Función para iniciar sesión en el servidor
   const iniciarSesion = async (data) => {
+    console.log(data)
     try {
       const respuesta = await AppiAxios.post('/login', data);
 
+      console.log(respuesta)
+      
       // Almacenar el token en localStorage
       const { accessToken } = respuesta.data;
       localStorage.setItem('authToken', accessToken);
