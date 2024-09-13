@@ -13,6 +13,7 @@ const CartElements = () => {
     clearCart(); 
   };
 
+
   return cartItems.length > 0 ? (
     <Container maxWidth='xl' sx={{ margin: '20px' }}>
       <Box sx={{ marginBottom: '20px' }}>
@@ -26,9 +27,9 @@ const CartElements = () => {
         <CardContent />
         <TotalCart />
         <Box sx={{ marginTop: '20px'}}>
-          <Link to='/inicio/detalleOrden'>
-            <Button variant="contained" color="primary" sx={{mr:'4px'}}>
-              Confirmar Comprar
+          <Link to='/inicio/detalleorden'>
+            <Button variant="contained" color="primary"  sx={{mr:'4px'}}>
+                 Confirmar Comprar
             </Button>
           </Link>
           <Button variant="contained" color="error" onClick={handleClearCart}>

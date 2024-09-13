@@ -8,6 +8,8 @@ import CartElements from '../components/carrito/CartElements';
 import { createBrowserRouter } from "react-router-dom";
 import OrdenDetalles from '../components/orden/OrdenDetalles';
 import VistaOrden from '../components/orden/VistaOrden'
+import Historial from '../components/historialCompras/Historial'
+import DetallesOrden from '../components/orden/DetallesOrden';
 
 export const router = createBrowserRouter([
     {
@@ -38,12 +40,20 @@ export const router = createBrowserRouter([
                 element: <CartElements />
             },
             {
+                path: 'detalleorden',
+                element: <DetallesOrden/>
+            },
+            {
                 path: 'vistaorden',
                 element: <VistaOrden/>
             },
             {
                path: 'ordendetalles/:idOrden',
                element: <OrdenDetalles/>     
+            },
+            {
+                path: 'historial',
+                element: <Historial/>
             }
 
         ]

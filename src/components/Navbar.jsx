@@ -30,7 +30,7 @@ export default function Navbar() {
             {/* Mostrar el botón de "Mis compras" si el rol no es "Operador" */}
             {userRol !== 'Operador' && (
               <Button color="inherit">
-                <Link to='/inicio/historialCompras' style={{ textDecoration: 'none', color: 'inherit' }}>Mis compras</Link>
+                <Link to='/inicio/historial' style={{ textDecoration: 'none', color: 'inherit' }}>Mis compras</Link>
               </Button>
             )}
           </Typography>
