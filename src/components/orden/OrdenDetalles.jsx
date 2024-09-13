@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Typography, Paper, List, ListItem, ListItemText, Button, CircularProgress } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
-import AppiAxios from '../../config/axios'; // Ajusta la ruta según tu proyecto
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Paper, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import AppiAxios from '../../config/axios';
 
-const OrdenDetalles = () => {
+const OrderDetails = () => {
   const { idOrden } = useParams();
-  const [orden, setOrden] = useState(null);
+  const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOrdenDetalles = async () => {
+    const fetchOrderDetails = async () => {
+      setLoading(true);
+      setError('');
       try {
         const response = await AppiAxios.get(`/ordenDetalles/${idOrden}`, {
           headers: {
@@ -19,28 +21,20 @@ const OrdenDetalles = () => {
           }
         });
 
-        // Verificar la estructura de la respuesta
-        console.log('Detalles recibidos:', response.data);
-
-        // Intentar combinar y limpiar los datos JSON
         let combinedJson = '';
 
-        // Si la respuesta contiene un array de objetos con fragmentos JSON
         if (Array.isArray(response.data)) {
           combinedJson = response.data.map(item => item['JSON_F52E2B61-18A1-11d1-B105-00805F49916B']).join('');
         } else {
           throw new Error('Los datos no están en el formato esperado.');
         }
 
-        // Analizar la cadena JSON
         const data = JSON.parse(combinedJson);
-        console.log(data)
 
-        // Verificar si los datos son un objeto
-        if (data && typeof data === 'object') {
-          setOrden(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setOrderData(data[0]); // Asume que solo hay un objeto de orden en el array
         } else {
-          throw new Error('Datos no están en formato de objeto.');
+          throw new Error('Datos no están en formato de array.');
         }
       } catch (err) {
         setError(err.message);
@@ -49,77 +43,67 @@ const OrdenDetalles = () => {
       }
     };
 
-    fetchOrdenDetalles();
+    fetchOrderDetails();
   }, [idOrden]);
 
-  // Función para marcar la orden como entregada
-  const handleEntregar = async () => {
-    try {
-      await AppiAxios.put(`/ordenDetalles/${idOrden}/entregar`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-      navigate('/inicio/vistaorden'); // Navegar a la vista de órdenes después de actualizar
-    } catch (err) {
-      setError(err.message); // Manejar errores
-    }
-  };
-
-  // Función para rechazar la orden
-  const handleRechazar = async () => {
-    try {
-      await AppiAxios.put(`/ordenDetalles/${idOrden}/rechazar`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-      navigate('/inicio/vistaorden'); // Navegar a la vista de órdenes después de actualizar
-    } catch (err) {
-      setError(err.message); // Manejar errores
-    }
-  };
-
-  if (loading) return <CircularProgress />; // Indicador de carga
-  if (error) return <Typography variant="h6" color="error">Error: {error}</Typography>; // Mostrar errores
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography variant="h6" color="error">Error: {error}</Typography>;
 
   return (
-    <Paper sx={{ padding: '20px', margin: '20px' }}>
-      <Button variant="contained" color="secondary" onClick={() => navigate('/inicio/vistaorden') } sx={{mb:'25px'}} >
+    <Paper style={{ padding: 20 }}>
+      <Typography variant="h4" gutterBottom>
+        Detalles de la Orden
+      </Typography>
+
+      {orderData ? (
+        <>
+        <Button variant="contained" color="secondary" onClick={() => navigate('/inicio/vistaorden') } sx={{mb:'25px'}} >
         Volver a Ordenes
-      </Button>
-      <Typography variant="h4">Detalles de la Orden {orden.idOrden}</Typography>
-      <Typography variant="h6">Fecha de Creación: {orden.fecha_creacion}</Typography>
-      <Typography variant="h6">Nombre Completo: {orden.nombre_completo}</Typography>
-      <Typography variant="h6">Dirección: {orden.direccion}</Typography>
-      <Typography variant="h6">Teléfono: {orden.telefono}</Typography>
-      <Typography variant="h6">Correo: {orden.correo_electronico}</Typography>
-      <Typography variant="h6">Fecha de Entrega: {orden.fecha_entrega}</Typography>
-      <Typography variant="h6">Total Orden: Q.{orden.total_orden}</Typography>
-      <Typography variant="h6">Detalles:</Typography>
-      {orden.detalles && orden.detalles.length > 0 ? (
-        <List>
-          {orden.detalles.map((detalle, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={`Producto ID: ${detalle.idProductos}`}
-                secondary={`Cantidad: ${detalle.cantidad} | Precio: ${detalle.precio} | Subtotal: ${detalle.subtotal}`}
-              />
-            </ListItem>
-          ))}
-        </List>
+        </Button>
+          <Typography><strong>ID Orden:</strong> {orderData.idOrden}</Typography>
+          <Typography><strong>Nombre Completo:</strong> {orderData.nombre_completo}</Typography>
+          <Typography><strong>Dirección:</strong> {orderData.direccion}</Typography>
+          <Typography><strong>Teléfono:</strong> {orderData.telefono}</Typography>
+          <Typography><strong>Correo Electrónico:</strong> {orderData.correo_electronico}</Typography>
+          <Typography><strong>Fecha de Entrega:</strong> {orderData.fecha_entrega}</Typography>
+          <Typography><strong>Total de Orden:</strong> {orderData.total_orden}</Typography>
+
+          <Typography variant="h6" style={{ marginTop: 20 }}>Detalles de los Productos</Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID Producto</TableCell>
+                  <TableCell>Cantidad</TableCell>
+                  <TableCell>Precio</TableCell>
+                  <TableCell>Subtotal</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orderData.detalles.map((detalle, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{detalle.idProductos}</TableCell>
+                    <TableCell>{detalle.cantidad}</TableCell>
+                    <TableCell>{detalle.precio}</TableCell>
+                    <TableCell>{detalle.subtotal}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
       ) : (
-        <Typography>No hay detalles disponibles.</Typography>
+        <Typography>No se encontraron detalles para esta orden.</Typography>
       )}
-    
-      <Button variant="contained" color="success" onClick={handleEntregar} sx={{ mt:'25px'}}>
+
+      <Button variant="contained" color="success"  sx={{ mt:'25px'}}>
         Entregar
       </Button>
-      <Button variant="contained" color="error" onClick={handleRechazar} sx={{ mt:'25px', ml:'8px'}} >
+      <Button variant="contained" color="error"  sx={{ mt:'25px', ml:'8px'}} >
         Rechazar 
       </Button>
     </Paper>
   );
 };
 
-export default OrdenDetalles;
+export default OrderDetails;
