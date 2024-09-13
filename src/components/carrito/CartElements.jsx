@@ -25,14 +25,14 @@ const CartElements = () => {
       <Container maxWidth="lg">
         <CardContent />
         <TotalCart />
-        <Box sx={{ marginTop: '20px' }}>
+        <Box sx={{ marginTop: '20px'}}>
           <Link to='/inicio/detalleOrden'>
-            <Button variant="contained" color="primary">
-              Comprar
+            <Button variant="contained" color="primary" sx={{mr:'4px'}}>
+              Confirmar Comprar
             </Button>
           </Link>
           <Button variant="contained" color="error" onClick={handleClearCart}>
-             Eliminar
+             Cancelar Compra
            </Button>
         </Box>
       </Container>

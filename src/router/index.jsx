@@ -6,9 +6,8 @@ import  Login  from "../auth/Login";
 import Register from  "../auth/Register";
 import CartElements from '../components/carrito/CartElements';
 import { createBrowserRouter } from "react-router-dom";
-import DetallesOrden from '../components/orden/DetallesOrden';
-import ListaOrdenes from '../components/orden/ListaOrdenes'
-
+import OrdenDetalles from '../components/orden/OrdenDetalles';
+import VistaOrden from '../components/orden/VistaOrden'
 
 export const router = createBrowserRouter([
     {
@@ -39,12 +38,12 @@ export const router = createBrowserRouter([
                 element: <CartElements />
             },
             {
-                path: 'detalleOrden',
-                element: <DetallesOrden/>
+                path: 'vistaorden',
+                element: <VistaOrden/>
             },
             {
-                path: 'listaOrdenes',
-                element: <ListaOrdenes/>
+               path: 'ordendetalles/:idOrden',
+               element: <OrdenDetalles/>     
             }
 
         ]

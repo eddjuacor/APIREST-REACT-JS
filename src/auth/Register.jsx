@@ -1,47 +1,30 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AppiAxios from '../config/axios'
-
-import {
-  Button,
-  TextField,
-  Paper,
-  Typography,
-  Container,
-  Box,
-  MenuItem
-
-} from '@mui/material';
+import AppiAxios from '../config/axios';
+import { Button, TextField, Paper, Typography, Container, Box, MenuItem } from '@mui/material';
 
 const roles = [
-  { idRol: '1', label: 'Cliente' },
   { idRol: '2', label: 'Operador' },
-  // Aqui puedo agregar mas roles
+  { idRol: '3', label: 'Cliente' }
 ];
 
 const estados = [
   { idEstados: '1', label: 'Activo' },
-  { idEstados: '2', label: 'Inactivo' },
-  // aqui puedo agregar mas estados
+  { idEstados: '2', label: 'Inactivo' }
 ];
 
-
 export default function Register() {
-
   const navigate = useNavigate();
 
-  //al momento que el cliente cree un usuario vamos a recoger estos datos y vamos a haacer la validacion
-
   const [formData, setFormData] = useState({
-    idRol: '',
     idEstados: '',
+    idRol: '',
     correo_electronico: '',
     nombre_completo: '',
+    password: '',
     telefono: '',
-    fecha_nacimiento: '',
-    password: ''
+    fecha_nacimiento: ''
   });
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,24 +37,22 @@ export default function Register() {
   const crearRegistro = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await AppiAxios.post('/usuarios', formData)
-      console.log(respuesta)
-      //si las credenciales son correctas ir a la pagina de inicio, nos vamos al login
-      navigate('/')
+      const respuesta = await AppiAxios.post('/usuarios', formData);
+      console.log(respuesta);
+      navigate('/');
     } catch (error) {
-      console.log(error)
+      console.error('Error al registrar el usuario:', error);
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ pt: 8 }} >
+    <Container component="main" maxWidth="xs" sx={{ pt: 8 }}>
       <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
-          Registrate
+          Regístrate
         </Typography>
         <Box component="form" onSubmit={crearRegistro} sx={{ mt: 1 }}>
           <TextField
-            /*-----------email------------*/
             label="Email"
             margin="normal"
             required
@@ -83,7 +64,6 @@ export default function Register() {
           />
 
           <TextField
-            /*-----------nombre------------*/
             label="Nombre"
             margin="normal"
             required
@@ -94,7 +74,6 @@ export default function Register() {
           />
 
           <TextField
-            /*-----------numero------------*/
             label="Teléfono"
             margin="normal"
             required
@@ -106,15 +85,12 @@ export default function Register() {
 
           <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 1 }}>
             <TextField
-              /*-----------fecha de nacimiento------------*/
-              label="Nacimiento"
+              label="Fecha de Nacimiento"
               margin="normal"
               required
               name="fecha_nacimiento"
               type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
+              InputLabelProps={{ shrink: true }}
               value={formData.fecha_nacimiento}
               onChange={handleChange}
               fullWidth
@@ -153,11 +129,9 @@ export default function Register() {
                 </MenuItem>
               ))}
             </TextField>
-
           </Box>
 
           <TextField
-            /*-----------password------------*/
             label="Contraseña"
             margin="normal"
             required
@@ -166,7 +140,6 @@ export default function Register() {
             value={formData.password}
             onChange={handleChange}
             fullWidth
-
           />
           <Button
             type="submit"
@@ -177,9 +150,8 @@ export default function Register() {
             Registrarse
           </Button>
         </Box>
-        <Link to="/" underline='none'>¿Ya tienes cuenta? Inicia Sesion</Link>
+        <Link to="/" underline='none'>¿Ya tienes cuenta? Inicia sesión</Link>
       </Paper>
-
     </Container>
   );
 }

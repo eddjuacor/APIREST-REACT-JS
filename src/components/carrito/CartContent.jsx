@@ -5,12 +5,12 @@ import { Button, Card, CardContent, CardMedia, Typography, CardActions } from '@
 const CartContent = () => {
   const { cartItems, setCartItems } = useContext(ContextApi);
 
-   // Maneja la adición de productos al carrito
+   // Maneja la adicion de productos al carrito
    const handleAgregar = (producto) => {
     const existingItem = cartItems.find(item => item.idProductos === producto.idProductos);
 
     if (existingItem) {
-      // Si el producto ya está en el carrito, incrementa la cantidad
+      // Si el producto ya esta en el carrito, incrementa la cantidad
       const updatedCartItems = cartItems.map(item =>
         item.idProductos === producto.idProductos
           ? { ...item, cantidad: item.cantidad + 1 }
@@ -18,7 +18,7 @@ const CartContent = () => {
       );
       setCartItems(updatedCartItems);
     } else {
-      // Si el producto no está en el carrito, agrégalo con cantidad 1
+      // Si el producto no esta en el carrito, agragalo con cantidad 1
       setCartItems([...cartItems, { ...producto, cantidad: 1 }]);
     }
   };

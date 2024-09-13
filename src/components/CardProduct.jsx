@@ -9,17 +9,17 @@ import { useContext } from 'react';
 import { ContextApi } from '../context/ContextApi';
 
 export default function CardProduct({ producto }) {
-  // Desestructuración de producto
+  // Desestruimos el producto
   const { nombre, marca, codigo, stock, precio } = producto;
 
   const { cartItems, setCartItems } = useContext(ContextApi);
 
   const addItemsCart = () => {
-    // Verifica si el producto ya está en el carrito
+    // Verificamos si el producto ya esta en el carrito
     const existingItem = cartItems.find(item => item.codigo === codigo);
 
     if (existingItem) {
-      // Si el producto ya está en el carrito, actualiza la cantidad
+      // actualizo el carrito cuando el producto este adentro
       const updatedCartItems = cartItems.map(item =>
         item.codigo === codigo
           ? { ...item, cantidad: item.cantidad + 1 }
@@ -27,7 +27,7 @@ export default function CardProduct({ producto }) {
       );
       setCartItems(updatedCartItems);
     } else {
-      // Si el producto no está en el carrito, agrégalo con cantidad 1
+      //agregando el producto con cantidad de 1 si no esta en el carrito
       setCartItems([...cartItems, { ...producto, cantidad: 1 }]);
     }
   };
