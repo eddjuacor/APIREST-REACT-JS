@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import AppiAxios from "../config/axios.js"; 
+import AppiAxios from "../config/axios.js";
 
 // Crear el contexto
 export const ContextApi = createContext();
@@ -12,8 +12,8 @@ const ApiProvider = ({ children }) => {
     auth: !!localStorage.getItem("authToken"),
   });
 
-  /**-----------------------------------Usuario----------------------------------------- */
-  const [usuario, setUsuario] = useState([]);
+  // Estado del usuario
+  const [usuario, setUsuario] = useState({});
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,7 +22,7 @@ const ApiProvider = ({ children }) => {
           const response = await AppiAxios.get('/usuarios', {
             headers: { authorization: `Bearer ${auth.token}` }
           });
-          setUsuario(response.data); 
+          setUsuario(response.data); // Asegúrate de que la estructura de response.data es la esperada
         }
       } catch (error) {
         console.error("Error al consultar los datos del usuario:", error.response ? error.response.data : error.message);
@@ -32,7 +32,17 @@ const ApiProvider = ({ children }) => {
     fetchUserData();
   }, [auth.token]);
 
-  /*----------------------------------OrdenDetalles------------------------------------ */
+  const getIdRol = () => {
+    return usuario.idRol; 
+  };
+
+
+
+  const getIdUsuarios = () => {
+    return usuario.idUsuarios; 
+  };
+
+  // Estado de las órdenes
   const [orden, setOrden] = useState([]);
 
   useEffect(() => {
@@ -44,26 +54,25 @@ const ApiProvider = ({ children }) => {
               authorization: `Bearer ${auth.token}`,
             },
           });
-          console.log('Respuesta del servidor:', response.data);
           if (Array.isArray(response.data)) {
             setOrden(response.data);
           }
         }
       } catch (error) {
-        console.log(error)
-      } 
+        console.log(error);
+      }
     };
 
     fetchOrden();
   }, [auth.token]);
 
-  /*-------------------------------------Productos-------------------------------------- */
+  // Estado de productos
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        
         if (auth.token) {
           const productosConsulta = await AppiAxios.get('/productos', {
             headers: {
@@ -71,7 +80,6 @@ const ApiProvider = ({ children }) => {
             }
           });
           setProductos(productosConsulta.data);
-   
         }
       } catch (error) {
         console.error('Error fetching productos:', error);
@@ -81,7 +89,7 @@ const ApiProvider = ({ children }) => {
     fetchProductos();
   }, [auth.token]);
 
-  /*------------------------------Carrito-----------------------------------------------*/
+  // Estado del carrito
   const [cartItems, setCartItems] = useState(() => {
     const storedCartItems = localStorage.getItem("cartItems");
     return storedCartItems ? JSON.parse(storedCartItems) : [];
@@ -120,7 +128,7 @@ const ApiProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  /*-------------------------------Cerrar Sesion-------------------------------------- */
+  // Cerrar sesión
   const cerrarSesion = () => {
     localStorage.removeItem("authToken");
     guardarAuth({
@@ -130,7 +138,7 @@ const ApiProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  /*-------------------------------Iniciar Sesion-------------------------------------- */
+  // Iniciar sesión
   const iniciarSesion = (token) => {
     localStorage.setItem("authToken", token);
     guardarAuth({
@@ -156,7 +164,9 @@ const ApiProvider = ({ children }) => {
         setProductos,
         usuario,
         setUsuario,
-        iniciarSesion, // Añadido para manejar el inicio de sesión
+        iniciarSesion, 
+        getIdUsuarios,
+        getIdRol
       }}
     >
       {children}

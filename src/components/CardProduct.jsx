@@ -4,13 +4,12 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import foto from '../assets/img/s21.jpg';
 import { useContext } from 'react';
 import { ContextApi } from '../context/ContextApi';
 
 export default function CardProduct({ producto }) {
   // Desestruimos el producto
-  const { nombre, marca, codigo, stock, precio } = producto;
+  const { nombre, marca, codigo, stock, precio, foto } = producto;
 
   const { cartItems, setCartItems } = useContext(ContextApi);
 
@@ -32,13 +31,16 @@ export default function CardProduct({ producto }) {
     }
   };
 
+  
+
   return (
     <Card sx={{ width: 345, margin: 1, border: 1 }}>
+
       <CardMedia
-        component="img"
-        image={foto}
+        component="img"  
+        image=""
         title={nombre}
-        sx={{ objectFit: 'cover' }}
+        sx={{  height: 200 }}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">

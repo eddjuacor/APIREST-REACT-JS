@@ -16,23 +16,20 @@ export default function Login() {
   // Configuración para redirección
   const navigate = useNavigate();
 
-  // Aut y token desde el context
+  // guardamos credenciales, token estados del usuario
   const {auth, guardarAuth} = useContext(ContextApi);
 
-  // Función para iniciar sesión en el servidor
+  // funcion para iniciar sesion
   const iniciarSesion = async (data) => {
-    console.log(data)
     try {
       const respuesta = await AppiAxios.post('/login', data);
-
-      console.log(respuesta)
       
       // Almacenar el token en localStorage
-      const { accessToken } = respuesta.data;
-      localStorage.setItem('authToken', accessToken);
+      const { token } = respuesta.data;
+      localStorage.setItem('authToken', token);
 
       guardarAuth({
-        accessToken,
+        token,
         auth: true,
       });
 

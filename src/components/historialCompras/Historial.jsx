@@ -1,87 +1,88 @@
-import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import AppiAxios from '../../config/axios'; // Importa tu configuración axios
 
-const Ordenes = () => {
-  const [ordenes, setOrdenes] = useState([]); // Inicializa como un array
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+const Historial = () => {
+  const [ordenes, setOrdenes] = useState([]);
+  const [userId, setUserId] = useState(null); // Guardará el ID del usuario registrado
+
+
 
   useEffect(() => {
-    const fetchOrdenes = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const response = await axios.get('/ordenesporusuario', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-          }
-        });
-
-        console.log('Datos recibidos:', response.data); // Verifica la estructura de los datos
-
-        // Asegúrate de que response.data sea un array
-        if (Array.isArray(response.data)) {
-          setOrdenes(response.data);
-        } else {
-          throw new Error('La respuesta del servidor no es un array.');
+    if (userId) {
+      const fetchOrdenes = async () => {
+        try {
+          const token = localStorage.getItem('authToken');
+          const response = await AppiAxios.get(`/ordenesporusuario/${idUsuarios}`,{
+            headers: {
+          'authorization': `Bearer ${token}`
         }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+          }); // Ajusta la ruta según tu configuración
+          
+          const data = response.data;
 
-    fetchOrdenes();
-  }, []);
+          // Verifica el formato y convierte el JSON si es necesario
+          const key = Object.keys(data)[0];
+          const ordenesJSON = JSON.parse(data[key]);
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography variant="h6" color="error">Error: {error}</Typography>;
+          // Filtra las órdenes por el ID del usuario
+          const filteredOrdenes = ordenesJSON.filter(orden => orden.idUsuarios === userId);
+          setOrdenes(filteredOrdenes);
+        } catch (error) {
+          console.error('Error al obtener las órdenes:', error);
+        }
+      };
+
+      fetchOrdenes();
+    }
+  }, [userId]);
 
   return (
-    <div style={{ padding: 20 }}>
-      <Typography variant="h4" gutterBottom>Órdenes</Typography>
-      <TableContainer component={Paper} sx={{ mt: '20px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID Usuario</TableCell>
-              <TableCell>ID Orden</TableCell>
-              <TableCell>Fecha Creación</TableCell>
-              <TableCell>Nombre Completo</TableCell>
-              <TableCell>Dirección</TableCell>
-              <TableCell>Teléfono</TableCell>
-              <TableCell>Correo Electrónico</TableCell>
-              <TableCell>Fecha Entrega</TableCell>
-              <TableCell>Total Orden</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ordenes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9}>No hay órdenes disponibles.</TableCell>
-              </TableRow>
-            ) : (
-              ordenes.map((orden) => (
-                <TableRow key={orden.idOrden}>
-                  <TableCell>{orden.idUsuarios}</TableCell>
-                  <TableCell>{orden.idOrden}</TableCell>
-                  <TableCell>{orden.fecha_creacion}</TableCell>
-                  <TableCell>{orden.nombre_completo}</TableCell>
-                  <TableCell>{orden.direccion}</TableCell>
-                  <TableCell>{orden.telefono}</TableCell>
-                  <TableCell>{orden.correo_electronico}</TableCell>
-                  <TableCell>{orden.fecha_entrega}</TableCell>
-                  <TableCell>Q.{orden.total_orden}</TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div>
+      <h2>Historial de Compras</h2>
+      {ordenes.length === 0 ? (
+        <p>No tienes órdenes.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>ID Orden</th>
+              <th>Nombre Completo</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>Correo Electrónico</th>
+              <th>Total</th>
+              <th>Fecha de Creación</th>
+              <th>Fecha de Entrega</th>
+              <th>Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ordenes.map((orden) => (
+              <tr key={orden.idOrden}>
+                <td>{orden.idOrden}</td>
+                <td>{orden.nombre_completo}</td>
+                <td>{orden.direccion}</td>
+                <td>{orden.telefono}</td>
+                <td>{orden.correo_electronico}</td>
+                <td>{orden.total_orden}</td>
+                <td>{orden.fecha_creacion}</td>
+                <td>{orden.fecha_entrega}</td>
+                <td>
+                  <ul>
+                    {orden.detalles.map((detalle, index) => (
+                      <li key={index}>
+                        Producto ID: {detalle.idProductos}, Cantidad: {detalle.cantidad}, Precio: {detalle.precio}, Subtotal: {detalle.subtotal}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
 
-export default Ordenes;
+export default Historial;

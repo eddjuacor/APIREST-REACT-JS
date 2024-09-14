@@ -10,6 +10,11 @@ import OrdenDetalles from '../components/orden/OrdenDetalles';
 import VistaOrden from '../components/orden/VistaOrden'
 import Historial from '../components/historialCompras/Historial'
 import DetallesOrden from '../components/orden/DetallesOrden';
+import CrudProductos from '../components/productos/CrudProductos'
+import CrudCategorias from '../components/categorias/CrudCategorias'
+
+
+
 
 export const router = createBrowserRouter([
     {
@@ -54,6 +59,14 @@ export const router = createBrowserRouter([
             {
                 path: 'historial',
                 element: <Historial/>
+            },
+            {
+                path: 'crudproductos',
+                element: <CrudProductos/>
+            },
+            {
+                path: 'crudcategorias',
+                element: <CrudCategorias/>
             }
 
         ]

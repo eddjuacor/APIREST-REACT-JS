@@ -11,49 +11,67 @@ import { useContext } from 'react';
 export default function Navbar() {
 
   const navigate = useNavigate();
-  const { cerrarSesion, userRol } = useContext(ContextApi);
+  const { cerrarSesion, getIdRol } = useContext(ContextApi);
+
+  const userRol = getIdRol();
 
   const handleLogout = () => {
     cerrarSesion();
     navigate('/');
   };
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button color="inherit">
-              <Link to='/inicio' style={{ textDecoration: 'none', color: 'inherit' }}>CODECAMP</Link>
-            </Button>
 
-            {/* Mostrar el botón de "Mis compras" si el rol no es "Operador" */}
-            {userRol !== 'Operador' && (
+  return (
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Button color="inherit">
-                <Link to='/inicio/historial' style={{ textDecoration: 'none', color: 'inherit' }}>Mis compras</Link>
+                <Link to='/inicio' style={{ textDecoration: 'none', color: 'inherit' }}>CODECAMP</Link>
+              </Button>
+  
+              {/* Mostrar el botón de "Mis compras" si el rol no es "Operador" */}
+              {userRol !== 'Operador' && (
+                <Button color="inherit">
+                  <Link to='/inicio/historial' style={{ textDecoration: 'none', color: 'inherit' }}>Mis compras</Link>
+                </Button>
+              )}
+  
+              {userRol !== 'Operador' && (
+                <Button color="inherit">
+                  <Link to='/inicio/crudproductos' style={{ textDecoration: 'none', color: 'inherit' }}>Productos</Link>
+                </Button>
+              )}
+  
+              {userRol !== 'Operador' && (
+                <Button color="inherit">
+                  <Link to='/inicio/crudcategorias' style={{ textDecoration: 'none', color: 'inherit' }}>Categorías</Link>
+                </Button>
+              )}
+            </Typography>
+  
+            {/* Mostrar el botón de "Carrito" si el rol no es "Cliente" */}
+            {userRol !== 'Cliente' && (
+              <Button color="inherit">
+                <Link to="/inicio/carrito" style={{ color: 'white' }}>
+                  <LocalGroceryStoreIcon />
+                </Link>
               </Button>
             )}
-          </Typography>
-
-          {/* Mostrar el botón de "Carrito" si el rol no es "Operador" */}
-          {userRol !== 'Operador' && (
-            <Button>
-              <Link to="/inicio/carrito" style={{ color: 'white' }}><LocalGroceryStoreIcon/></Link>
-            </Button>
-          )}
-
-          {/* Mostrar el botón de "Órdenes" si el rol no es "cliente" */}
-          {userRol !== 'cliente' && (
-            <Link to="/inicio/vistaorden" style={{ textDecoration: 'none', color: 'inherit' }}>
+  
+            {/* Mostrar el botón de "Órdenes" si el rol no es "Cliente" */}
+            {userRol !== 'Cliente' && (
               <Button color="inherit">
-                Órdenes
+                <Link to="/inicio/vistaorden" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  Órdenes
+                </Link>
               </Button>
-            </Link>
-          )}
+            )}
+  
+            <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    );
 
-          <Button color="inherit" onClick={handleLogout}>Cerrar Sesion</Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
 }
